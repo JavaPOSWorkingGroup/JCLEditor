@@ -1,0 +1,230 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+// Build Script for building JavaPOS Configuration Editor (JCL) Library
+//
+// Author: denis.kuniss@wincor-nixdorf.com (2016)
+//
+///////////////////////////////////////////////////////////////////////////////
+
+plugins {
+	id 'java'
+	id 'eclipse'
+//  id 'maven' // comment this in and the next line out for populating to a local Maven repository for testing purposes
+    id 'com.github.oehme.sobula.bintray-release' version '0.6.7'
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.11'
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Names and Versions
+///////////////////////////////////////////////////////////////////////////////
+
+def artifactName = 'javapos-config-editor'
+def groupId='org.javapos'
+def version='2.2.0'
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Build Dependencies
+///////////////////////////////////////////////////////////////////////////////
+
+repositories {
+	jcenter()
+	if (project.plugins.hasPlugin('maven')) 
+	{ // evaluates only at development environment, not at travis-ci.org
+	    maven {
+	        url "file:$localTestFileRepositoryDir"
+	        // localTestFileRepositoryDir must be defined in gradle.properties
+	    }
+	}
+}
+
+def testResourceDir = file("${System.properties['java.io.tmpdir']}/javapos-config-editor-test/resources")
+
+dependencies {
+	compile 'xerces:xerces:1.2.3'
+	compile 'org.javapos:javapos-contracts:1.6.0'
+	compile "org.javapos:javapos-config-loader:$version"
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Build Tasks
+///////////////////////////////////////////////////////////////////////////////
+
+sourceCompatibility = '1.5' // this defines the lowest JVM version this library may be used with
+
+// this is to request the best matching JDK (currently 1.5) for compiling in Eclipse 
+// it is recommended to install a JDK which matches best to avoid applying APIs methods and types not available in specified JVM compatibility version  
+eclipse.classpath {
+	containers.clear()
+	containers "org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-$sourceCompatibility"
+}
+
+def javaposManifest = 	manifest {
+        attributes('Specification-Title': 'UnifiedPOS Standard',
+				   'Specification-Vendor': 'UnifiedPOS Committee',
+                   'Implementation-Title': 'JavaPOS Configuration Editor',
+				   'Implementation-Vendor': 'github.com/JavaPOSWorkingGroup',
+                   'Implementation-Version': version,
+                   'Main-Class': 'jpos.config.Version')
+}
+
+jar {
+	baseName = artifactName
+	manifest = javaposManifest
+}
+
+sourceJar {
+	manifest = javaposManifest
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Test Tasks
+///////////////////////////////////////////////////////////////////////////////
+
+
+task prepareTestConfiguration {
+    description = 'copies the initial jpos.properties file to the resource directory where generated jpos.properties files are written to'
+    doLast {
+		testResourceDir.mkdirs()
+		copy {
+			from ("$projectDir/src/test/resources/") {
+				include "jpos/res/jpos_junit.properties"
+			}
+			into testResourceDir
+			rename 'jpos_junit.properties', 'jpos.properties'
+		}
+	}
+}
+
+test.dependsOn prepareTestConfiguration
+
+// Note: prepareTestConfiguration is needed to be called too before JUnit tests are started in Eclipse
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Artifact Upload
+///////////////////////////////////////////////////////////////////////////////
+
+if (project.plugins.hasPlugin('com.github.oehme.sobula.bintray-release')) 
+{ // evaluates only on travis-ci.org for releasing
+
+    group = "org.javapos"
+    description = "JavaPOS Configuration Editor Library"
+     
+    contacts {
+        "builder@javapos.org" {
+            moniker "JavaPOS Working Group"
+            roles "owner"
+            github "JavaPOSWorkingGroup"
+        }
+    }
+    
+    bintray.user = "javaposworkinggroup"
+    bintray.pkg.version.mavenCentralSync.user = "kuniss"
+    bintray.pkg.version.mavenCentralSync.sync = false // remove this line when library has been enabled in Binatray for synchronizing to Maven Central
+}
+
+if (project.plugins.hasPlugin('maven')) 
+{ // evaluates only at development environment, not at travis-ci.org
+
+	artifacts {
+		archives jar
+	}
+	
+	uploadArchives {
+	    repositories {
+	        mavenDeployer {
+	            repository(url: "file:$localTestFileRepositoryDir")
+	            pom.artifactId = artifactName
+	            pom.groupId = groupId
+	            pom.version = version
+	        }
+	    }
+	}
+}
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Source Import
+///////////////////////////////////////////////////////////////////////////////
+
+// The following is for importing the source code initially; it does not take 
+// part of a release build
+  
+if (project.hasProperty('javaposImportDir')) 
+{ // evaluate only at development environment, not at travis-ci.org
+
+	// javaposImportDir must be defined in the gradle.properties file
+	def jclSourceDir ="$javaposImportDir/jcl${version}/src"
+	
+	task importSources {
+		description = 'Copies the sources from an official JCL source distribution archive into this projectout of the current version of the project.'
+		
+		doLast {
+			assert file(jclSourceDir).exists(), "import archive '$jclSourceDir' does not exist"
+			copy {
+				from (jclSourceDir) {
+					include 'jpos/config/simple/editor/**'
+					exclude 'jpos/config/simple/editor/i18n/**'
+				}
+				into "src/main/java"
+			}
+			copy {
+				from (jclSourceDir) {
+					include 'jpos/res/images/**'
+					include 'jpos/config/simple/editor/i18n/**'
+				}
+				into "src/main/resources"
+			}
+			copy {
+				from (jclSourceDir) {								// from the productive source!
+					include 'jpos/res/**'							// to get editor launched for testing purposes; otherwise a NPE is thrown
+					exclude 'jpos/res/images/**'					// productive resources
+				}
+				into "src/test/resources"
+				includeEmptyDirs = false
+			}
+		}
+	}
+}
+
+// since JCL version 2.2.0 a license note was put ino each source
+// however, the URL there is outdated; the following task updates it
+ 
+def replaceInFile = {File file, from, to ->
+	def fileContents = file.getText()
+	def quotedStr = java.util.regex.Matcher.quoteReplacement(to) 
+	fileContents = fileContents.replaceAll(from, quotedStr)
+	file.write(fileContents)
+	logger.debug("replacements done in file '$file'")
+}
+
+
+task replaceLicenseURL << {
+	sourceSets.main.java.each {
+		replaceInFile(it, 
+			'http://oss.software.ibm.com/developerworks/opensource/license-cpl.html', 
+			'http://www.ibm.com/developerworks/library/os-cpl.html')
+		logger.info("license URL updated in file '$it'")
+	} 
+}
+
+def normalizeEOL = { file ->
+		replaceInFile(file, 
+			'(\r\n)|\n|\r', 
+			'\r\n')
+		logger.info("normalized EOL in file '$file'")
+}
+
+task normalizeEOL << {
+	sourceSets.main.allSource.each { normalizeEOL(it) }
+	sourceSets.test.allSource.each { normalizeEOL(it) }
+	fileTree('src/doc').each { normalizeEOL(it) } 
+}
