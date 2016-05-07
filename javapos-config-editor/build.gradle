@@ -70,7 +70,7 @@ def javaposManifest = 	manifest {
                    'Implementation-Title': 'JavaPOS Configuration Editor',
 				   'Implementation-Vendor': 'github.com/JavaPOSWorkingGroup',
                    'Implementation-Version': version,
-                   'Main-Class': 'jpos.config.Version')
+                   'Main-Class': 'jpos.config.simple.editor.JposEntryEditor')
 }
 
 jar {
