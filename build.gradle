@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Build Script for building JavaPOS Configuration Editor (JCL) Library
+// Build Script for building JavaPOS Configuration Editor
 //
 // Author: denis.kuniss@wincor-nixdorf.com (2016)
 //
@@ -42,8 +42,6 @@ repositories {
 	}
 }
 
-def testResourceDir = file("${System.properties['java.io.tmpdir']}/javapos-config-editor-test/resources")
-
 dependencies {
 	compile 'xerces:xerces:1.2.3'
 	compile 'org.javapos:javapos-contracts:1.6.0'
@@ -83,30 +81,6 @@ sourceJar {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// Test Tasks
-///////////////////////////////////////////////////////////////////////////////
-
-
-task prepareTestConfiguration {
-    description = 'copies the initial jpos.properties file to the resource directory where generated jpos.properties files are written to'
-    doLast {
-		testResourceDir.mkdirs()
-		copy {
-			from ("$projectDir/src/test/resources/") {
-				include "jpos/res/jpos_junit.properties"
-			}
-			into testResourceDir
-			rename 'jpos_junit.properties', 'jpos.properties'
-		}
-	}
-}
-
-test.dependsOn prepareTestConfiguration
-
-// Note: prepareTestConfiguration is needed to be called too before JUnit tests are started in Eclipse
-
-
-///////////////////////////////////////////////////////////////////////////////
 // Artifact Upload
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -114,7 +88,7 @@ if (project.plugins.hasPlugin('com.github.oehme.sobula.bintray-release'))
 { // evaluates only on travis-ci.org for releasing
 
     group = "org.javapos"
-    description = "JavaPOS Configuration Editor Library"
+    description = "JavaPOS Configuration Editor"
      
     contacts {
         "builder@javapos.org" {
