@@ -24,7 +24,7 @@ task wrapper(type: Wrapper) {
 
 def artifactName = 'javapos-config-editor'
 def groupId='org.javapos'
-def version='2.3.0-RC3'
+def version='2.3.0'
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ repositories {
 dependencies {
 	compile 'xerces:xerces:1.2.3'
 	compile 'org.javapos:javapos-contracts:1.6.0'
-	compile "org.javapos:javapos-config-loader:$version"
+	compile "org.javapos:javapos-config-loader:2.3.1"
 }
 
 
