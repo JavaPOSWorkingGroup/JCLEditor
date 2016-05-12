@@ -234,9 +234,9 @@ class MainFrame extends JFrame
         editorModeButtonGroup.add( serEditorModeMenuItem );
         
         editorModeMenu.add( xmlEditorModeMenuItem );
-        editorModeMenu.add( serEditorModeMenuItem );        
-        editMenu.add( editorModeMenu );
-        
+        editorModeMenu.add( serEditorModeMenuItem );  
+        editMenu.add(editorModeMenu);
+
         editMenu.addSeparator();
         editMenu.add( jposEntryMergerSubMenu );
         editMenu.addSeparator();
@@ -1534,8 +1534,8 @@ class MainFrame extends JFrame
 
         registryMode = false;
         
-		xmlEditorModeMenuItem.setEnabled( true );
-		serEditorModeMenuItem.setEnabled( true );        
+		xmlEditorModeMenuItem.setEnabled( false );
+		serEditorModeMenuItem.setEnabled( false );        
         
         setEntriesChanged( false );
         
