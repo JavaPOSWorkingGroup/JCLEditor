@@ -48,7 +48,14 @@ public class LeafTreeNodeUI extends AbstractTreeNodeUI
     public String getName() { return toString(); }
 
     /** @return the ImageIcon for drawing the node */
-    public ImageIcon getImageIcon() { return null; }
+    public ImageIcon getImageIcon() {
+        if( treeImageIcon == null )
+        {
+            String imageName = "file.gif";
+            treeImageIcon = JposEntryEditorUtility.getTreeImage( imageName );
+        }
+        return treeImageIcon;
+ }
 
     /**
      * @return string representation of this TreeNodeUI so that the correct
@@ -67,5 +74,6 @@ public class LeafTreeNodeUI extends AbstractTreeNodeUI
     //
 
     private JposEntry jposEntry;
+    protected ImageIcon treeImageIcon;
 }
 

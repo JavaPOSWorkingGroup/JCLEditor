@@ -42,12 +42,14 @@ public class JposEntryMergerDialog extends JDialog
     // Ctor(s)
     //
 
-	/**
+   
+
+    /**
 	 * 1-arg ctor.  Creates a modal dialog with parentFrame as parent 
 	 * @param parentFrame the MainFrame parent of this dialog
 	 */
 	public JposEntryMergerDialog( MainFrame parentFrame )
-	{ this( parentFrame, true ); }
+	{ this( parentFrame, true);}
 
 	/**
 	 * 2-arg ctor 
@@ -87,6 +89,7 @@ public class JposEntryMergerDialog extends JDialog
 		JPanel jPanel = new JPanel( new FlowLayout( FlowLayout.CENTER ) );
 		jPanel.add( mergeSaveXMLButton );
 		jPanel.add( mergeSaveSerializedButton );
+        jPanel.add(cancelButton );
 		getContentPane().add( jPanel );
 
 		//Setup event registration
@@ -121,7 +124,13 @@ public class JposEntryMergerDialog extends JDialog
 								{ mergeAndSaveSerializedButtonClicked(); }
 							}
 						 );
-
+        cancelButton.
+        addActionListener(  new ActionListener()
+                            {
+                                public void actionPerformed(ActionEvent e)
+                                {closeDialog();}
+                            });
+        
 		addWindowListener( 	new WindowAdapter()
 							{
 								public void windowClosing( WindowEvent e )
@@ -161,7 +170,13 @@ public class JposEntryMergerDialog extends JDialog
 		config.setJposEntryMergerDialogLocation( getLocation() );
 		config.setJposEntryMergerDialogSize( getSize() );
 	}
-
+   /**
+    * called when cancel button is pressed
+    * */
+    private void closeDialog()
+    {
+        setVisible(false);   
+    }
 	/** Called when the openFile1Button is clicked */
 	private void openFile1ButtonClicked()
 	{
@@ -566,12 +581,14 @@ public class JposEntryMergerDialog extends JDialog
 	
 	private JButton mergeSaveSerializedButton = 
 				     new JButton( MERGE_SAVE_SERIALIZED_STRING );
-
+    private JButton cancelButton = new JButton (CANCEL_STRING);
 	private JposRegPopulator xmlRegPopulator = new SimpleXmlRegPopulator();
 	private JposRegPopulator serRegPopulator = new SimpleRegPopulator();
 
 	private FileFilter serFileFilter = new SerFileFilter();
 	private FileFilter xmlFileFilter = new XmlFileFilter();
+    //default serial version UID
+    private static final long serialVersionUID = 1L;
 
 	//-------------------------------------------------------------------------
 	// Class constants
@@ -641,6 +658,8 @@ public class JposEntryMergerDialog extends JDialog
 								 "Successfully saved serialized file...";
 								 
 	public static final String OVERWRITE_FILE_STRING = 
-								 "File exists, overwrite?";								 
+								 "File exists, overwrite?";	
+    public static final String CANCEL_STRING = "Cancel"; 
+    
 	//</i18n>
 }

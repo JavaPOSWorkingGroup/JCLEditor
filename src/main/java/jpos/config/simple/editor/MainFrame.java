@@ -507,6 +507,17 @@ class MainFrame extends JFrame
         jposEntryTreePanel.registerTreeForPopupMenu( popupMenu, popupListener );
         
         loadConfig();
+
+        if( isEditorInXmlMode() ){
+            xmlEditorModeMenuItem.setSelected(true);
+            serEditorModeMenuItem.setEnabled(false);
+        }else
+        {
+            serEditorModeMenuItem.setSelected(true);
+            xmlEditorModeMenuItem.setEnabled(false);
+        }
+
+
     }
 
     //-------------------------------------------------------------------------
@@ -1408,7 +1419,6 @@ class MainFrame extends JFrame
                 String logicalName = (String)entry.
                                      getPropertyValue( JposEntry.
                                                        LOGICAL_NAME_PROP_NAME );
-                Object value = entry.getPropertyValue( logicalName );
 
                 if( registry.hasJposEntry( logicalName ) )
                     registry.removeJposEntry( logicalName );
@@ -1424,7 +1434,6 @@ class MainFrame extends JFrame
                                      getPropertyValue( JposEntry.
                                                        LOGICAL_NAME_PROP_NAME );
 
-                Object value = entry.getPropertyValue( logicalName );
 
                 if( verifyEntryValidity( entry ) == false )
                 {
@@ -1453,6 +1462,8 @@ class MainFrame extends JFrame
             }
             catch( Exception e )
             {
+                showErrorMessageToUser( ERROR_SAVING_ENTRIES_TO_FILE_MSG + ": " 
+                        + e.getMessage() );
             	tracer.println( "Exception while saving JposEntryRegistry exception.message=" +
             					e.getMessage() );
             }
@@ -1600,7 +1611,12 @@ class MainFrame extends JFrame
 
 		xmlEditorModeMenuItem.setEnabled( false );
 		serEditorModeMenuItem.setEnabled( false );
-
+        if( isEditorInXmlMode() ){
+            xmlEditorModeMenuItem.setSelected(true);
+        }else
+        {
+            serEditorModeMenuItem.setSelected(true);
+        }
         if( jposEntryList.size() > 0 ) 
         {
             Object[] args = { new Integer( jposEntryList.size() ) }; 

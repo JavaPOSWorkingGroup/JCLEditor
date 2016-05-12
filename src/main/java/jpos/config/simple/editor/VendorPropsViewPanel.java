@@ -41,6 +41,7 @@ import jpos.config.simple.*;
  */
 class VendorPropsViewPanel extends AbstractPropsViewPanel
 {
+
     /** Default ctor */
     public VendorPropsViewPanel()
     {
@@ -305,7 +306,8 @@ class VendorPropsViewPanel extends AbstractPropsViewPanel
 		// Ctor()
 		//
 
-		/** Default ctor */
+
+        /** Default ctor */
 		PropsTableModel() {}
 
 		//---------------------------------------------------------------------
@@ -543,7 +545,10 @@ class VendorPropsViewPanel extends AbstractPropsViewPanel
 				}
 				catch( JposConfigException jce )
 				{
-					try{ prop.setValue( JposEntryUtility.getDefaultValueForType( propType ) ); }
+					try{ 
+                        prop.setValue( JposEntryUtility.getDefaultValueForType( propType ) );
+                        fireTableDataChanged();
+                    }
 					catch( JposConfigException e ) {}
 //					JOptionPane.
 //					showMessageDialog( VendorPropsViewPanel.this,
@@ -700,6 +705,10 @@ class VendorPropsViewPanel extends AbstractPropsViewPanel
 		//---------------------------------------------------------------------
 		// Private constants
 		//
+        /**
+         * default serial version UID
+         */
+        private static final long serialVersionUID = 1L;
 
 		private final String[] COLUMN_NAMES = 
 					   { PROP_NAME_STRING, PROP_VALUE_STRING, PROP_TYPE_STRING };
@@ -710,6 +719,11 @@ class VendorPropsViewPanel extends AbstractPropsViewPanel
     //
 
 	public static final JposEntry EMPTY_JPOSENTRY = new SimpleEntry();
+    /**
+     * default serial version UID
+     */
+    private static final long serialVersionUID = 1L;
+
 
 	//<i18n>
 	public static final String PROP_NAME_STRING = "Property Name";

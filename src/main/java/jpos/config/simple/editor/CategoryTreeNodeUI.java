@@ -45,14 +45,22 @@ public class CategoryTreeNodeUI extends AbstractTreeNodeUI
     /** @return the DevCat name for a device Category's name to display it correctly */ 
     private String lookUpDevName( String devCat )
     {
-        if( devCat.equalsIgnoreCase( "bumpbar" ) )
+        if( devCat.equalsIgnoreCase( "biometrics" ) )
+            return "Biometrics";
+        else if( devCat.equalsIgnoreCase( "bumpbar" ) )
             return "BumpBar";
         else if( devCat.equalsIgnoreCase( "cashchanger" ) )
             return "CashChanger";
         else if( devCat.equalsIgnoreCase( "cashdrawer" ) )
             return "CashDrawer";
+        else if( devCat.equalsIgnoreCase( "cat" ) )
+            return "CAT";
+        else if( devCat.equalsIgnoreCase( "checkscanner" ) )
+            return "CheckScanner";
         else if( devCat.equalsIgnoreCase( "coindispenser" ) )
             return "CoinDispenser";
+        else if( devCat.equalsIgnoreCase( "electronicjournal" ) )
+            return "ElectronicJournal";
         else if( devCat.equalsIgnoreCase( "fiscalprinter" ) )
             return "FiscalPrinter";
         else if( devCat.equalsIgnoreCase( "hardtotals" ) )
@@ -63,12 +71,18 @@ public class CategoryTreeNodeUI extends AbstractTreeNodeUI
             return "LineDisplay";
         else if( devCat.equalsIgnoreCase( "micr" ) )
             return "MICR";
+        else if( devCat.equalsIgnoreCase( "motionsensor" ) )
+            return "MotionSensor";
         else if( devCat.equalsIgnoreCase( "msr" ) )
             return "MSR";
         else if( devCat.equalsIgnoreCase( "pinpad" ) )
             return "PinPad";
+        else if( devCat.equalsIgnoreCase( "pointcardrw" ) )
+            return "PointCardRW";
         else if( devCat.equalsIgnoreCase( "poskeyboard" ) )
             return "POSKeyboard";
+        else if( devCat.equalsIgnoreCase( "pospower" ) )
+            return "POSPower";
         else if( devCat.equalsIgnoreCase( "posprinter" ) )
             return "POSPrinter";
         else if( devCat.equalsIgnoreCase( "remoteorderdisplay" ) )
@@ -79,6 +93,8 @@ public class CategoryTreeNodeUI extends AbstractTreeNodeUI
             return "Scanner";
         else if( devCat.equalsIgnoreCase( "signaturecapture" ) )
             return "SignatureCapture";
+        else if( devCat.equalsIgnoreCase( "smartcardrw" ) )
+            return "SmartCardRW";
         else if( devCat.equalsIgnoreCase( "toneindicator" ) )
             return "ToneIndicator";
         
