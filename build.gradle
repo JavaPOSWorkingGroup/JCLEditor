@@ -9,6 +9,7 @@
 plugins {
     id 'com.gradle.build-scan' version '1.9'
 	id 'java'
+	id 'application'
 	id 'eclipse'
 //  id 'maven' // comment this in and the next line out for populating to a local Maven repository for testing purposes
     id 'com.github.oehme.sobula.bintray-release' version '0.6.7'
@@ -16,6 +17,8 @@ plugins {
 
 ext.githubProjectUrl = 'https://github.com/JavaPOSWorkingGroup/javapos-config-editor'
 ext.travisProjectUrl = 'https://travis-ci.org/JavaPOSWorkingGroup/javapos-config-editor'
+
+mainClassName = 'jpos.config.simple.editor.JposEntryEditor'
 
 buildScan {
     licenseAgreementUrl = 'https://gradle.com/terms-of-service'
